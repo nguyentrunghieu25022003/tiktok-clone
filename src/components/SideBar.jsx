@@ -17,36 +17,42 @@ import {
   LiveTv,
   MoreHoriz,
 } from "@mui/icons-material";
+import { Link, useLocation } from "react-router-dom";
 
 const SideBar = () => {
+  const location = useLocation();
+
   const menuItems = [
+    { icon: <Home sx={{ fontSize: "35px" }} />, label: "For You", path: "/" },
     {
-      icon: <Home sx={{ color: "black", fontSize: "35px" }} />,
-      label: "Đề xuất",
+      icon: <Explore sx={{ fontSize: "35px" }} />,
+      label: "Discover",
+      path: "/discover",
     },
     {
-      icon: <Explore sx={{ color: "black", fontSize: "35px" }} />,
-      label: "Khám phá",
+      icon: <Person sx={{ fontSize: "35px" }} />,
+      label: "Following",
+      path: "/following",
     },
     {
-      icon: <Person sx={{ color: "black", fontSize: "35px" }} />,
-      label: "Đã follow",
+      icon: <Upload sx={{ fontSize: "35px" }} />,
+      label: "Upload",
+      path: "/upload",
     },
     {
-      icon: <Upload sx={{ color: "black", fontSize: "35px" }} />,
-      label: "Tải lên",
-    },
-    {
-      icon: <LiveTv sx={{ color: "black", fontSize: "35px" }} />,
+      icon: <LiveTv sx={{ fontSize: "35px" }} />,
       label: "LIVE",
+      path: "/live",
     },
     {
-      icon: <Person sx={{ color: "black", fontSize: "35px" }} />,
-      label: "Hồ sơ",
+      icon: <Person sx={{ fontSize: "35px" }} />,
+      label: "Profile",
+      path: "/profile",
     },
     {
-      icon: <MoreHoriz sx={{ color: "black", fontSize: "35px" }} />,
-      label: "Thêm",
+      icon: <MoreHoriz sx={{ fontSize: "35px" }} />,
+      label: "More",
+      path: "/more",
     },
   ];
 
@@ -71,8 +77,9 @@ const SideBar = () => {
         <Box
           sx={{
             backgroundColor: "#f1f1f1",
-            padding: " 10px 12px 6px 12px",
+            padding: "10px 12px 6px 12px",
             borderRadius: 6,
+            mt: 5,
             mb: 2,
             display: "flex",
             alignItems: "center",
@@ -80,19 +87,39 @@ const SideBar = () => {
         >
           <Search sx={{ color: "black" }} />
           <InputBase
-            placeholder="Tìm kiếm"
+            placeholder="Search"
             fullWidth
             sx={{ ml: 2, color: "gray" }}
           />
         </Box>
 
         <List>
-          {menuItems.map((item, index) => (
-            <ListItem button key={index} sx={{ px: 1 }}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
-            </ListItem>
-          ))}
+          {menuItems.map((item, index) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <ListItem
+                button
+                key={index}
+                component="Link"
+                to={item.path}
+                sx={{
+                  px: 1,
+                  bgcolor: isActive ? "#fff5f5" : "transparent",
+                  "& .MuiTypography-root": {
+                    color: isActive ? "rgba(254, 44, 85, 1)" : "black",
+                    fontWeight: isActive ? "bold" : "normal",
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{ color: isActive ? "rgba(254, 44, 85, 1)" : "black" }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={<Typography>{item.label}</Typography>} />
+              </ListItem>
+            );
+          })}
         </List>
 
         <Button
@@ -101,49 +128,38 @@ const SideBar = () => {
           color="error"
           sx={{ mt: 2, background: "rgba(254, 44, 85, 1)" }}
         >
-          Đăng nhập
+          Log in
         </Button>
       </Box>
 
-      <hr style={{ border: '1px solid #E3E3E4', margin: '20px 0 10px 0' }} />
+      <hr style={{ border: "1px solid #E3E3E4", margin: "10px 0 5px 0" }} />
 
-      <Box>
-        <List>
-          <ListItem button>
-            <ListItemText
-              primary={
-                <Typography sx={{ fontWeight: "bold", color: '#999' }}>Company</Typography>
-              }
-            />
-          </ListItem>
-          <ListItem button>
-            <ListItemText
-              primary={
-                <Typography sx={{ fontWeight: "bold", color: '#999' }}>Program</Typography>
-              }
-            />
-          </ListItem>
-          <ListItem button>
-            <ListItemText
-              primary={
-                <Typography sx={{ fontWeight: "bold", color: '#999' }}>
-                  Terms and Policies
-                </Typography>
-              }
-            />
-          </ListItem>
-          <ListItem button>
-            <ListItemText
-              primary={<Typography sx={{ fontSize: "12px", color: '#999' }}>More</Typography>}
-            />
-          </ListItem>
-          <ListItem button>
-            <ListItemText
-              primary={
-                <Typography sx={{ fontSize: "12px", color: '#999' }}>© 2025 TikTok</Typography>
-              }
-            />
-          </ListItem>
+      <Box sx={{ pb: 6 }}>
+        <List dense disablePadding>
+          {[
+            "Company",
+            "Program",
+            "Terms and Policies",
+            "More",
+            "© 2025 TikTok",
+          ].map((label, i) => (
+            <ListItem button key={i} sx={{ px: 2, py: 0.5, minHeight: 20 }}>
+              <ListItemText
+                primary={
+                  <Typography
+                    sx={{
+                      fontSize: i >= 3 ? "12px" : "13px",
+                      fontWeight: i < 3 ? "bold" : "normal",
+                      color: "#999",
+                      lineHeight: 0.9,
+                    }}
+                  >
+                    {label}
+                  </Typography>
+                }
+              />
+            </ListItem>
+          ))}
         </List>
       </Box>
     </Box>

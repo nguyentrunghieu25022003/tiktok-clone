@@ -8,6 +8,7 @@ const AutoPlayVideo = ({ url, muted, isActive, videoId }) => {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;

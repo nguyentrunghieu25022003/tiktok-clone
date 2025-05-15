@@ -1,15 +1,15 @@
-import { createContext, useContext, useMemo, useState } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { createContext, useContext, useMemo, useState } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const ThemeContext = createContext();
 
 export const ThemeModeProvider = ({ children }) => {
-  const [mode, setMode] = useState(localStorage.getItem('theme') || 'light');
+  const [mode, setMode] = useState(localStorage.getItem("theme") || "light");
 
   const toggleTheme = () => {
-    const next = mode === 'light' ? 'dark' : 'light';
+    const next = mode === "light" ? "dark" : "light";
     setMode(next);
-    localStorage.setItem('theme', next);
+    localStorage.setItem("theme", next);
   };
 
   const theme = useMemo(
@@ -17,10 +17,10 @@ export const ThemeModeProvider = ({ children }) => {
       createTheme({
         palette: {
           mode,
-          ...(mode === 'dark'
+          ...(mode === "dark"
             ? {
                 background: {
-                  default: '#121212',
+                  default: "#121212",
                 },
               }
             : {}),

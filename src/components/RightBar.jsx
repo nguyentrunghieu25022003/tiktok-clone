@@ -14,30 +14,40 @@ const RightBar = ({ onScroll, currentIndex, videoCount }) => {
         onClick={() => onScroll(-1)}
         disabled={currentIndex <= 0}
         sx={{
-          backgroundColor: 'f1f1f2',
+          backgroundColor: "f1f1f2",
           minWidth: 0,
-          borderRadius: '50%',
+          borderRadius: "50%",
           width: 48,
           height: 48,
-          '&:hover': { backgroundColor: '#bfbfbf' }
+          "&:hover": { backgroundColor: "#bfbfbf" },
         }}
       >
-        <KeyboardArrowUp sx={{ fontSize: 40, color: "black" }} />
+        <KeyboardArrowUp
+          sx={{
+            fontSize: 40,
+            color: currentIndex <= 0 ? "#999" : "#000",
+          }}
+        />
       </Button>
 
       <Button
         onClick={() => onScroll(1)}
         disabled={currentIndex >= videoCount - 1}
         sx={{
-          backgroundColor: 'f1f1f2',
+          backgroundColor: "f1f1f2",
           minWidth: 0,
-          borderRadius: '50%',
+          borderRadius: "50%",
           width: 48,
           height: 48,
-          '&:hover': { backgroundColor: '#bfbfbf' }
+          "&:hover": { backgroundColor: "#bfbfbf" },
         }}
       >
-        <KeyboardArrowDown sx={{ fontSize: 40, color: "black" }} />
+        <KeyboardArrowDown
+          sx={{
+            fontSize: 40,
+            color: currentIndex === videoCount.length - 1 ? "#999" : "#000",
+          }}
+        />
       </Button>
     </Stack>
   );

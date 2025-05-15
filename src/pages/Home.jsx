@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -15,18 +15,21 @@ import {
   VolumeUp,
   VolumeOff,
 } from "@mui/icons-material";
-import { keyframes } from "@mui/system";
 import axios from "axios";
+import { AnimatePresence } from "framer-motion";
 import RightBar from "../components/RightBar";
 import AutoPlayVideo from "../components/Video";
+import CommentBox from "../components/CommentBox";
 import { debounce } from "../utils/debounce";
 import { useVideoScroller } from "../hooks/useVideoScroller";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [videos, setVideos] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [activeVideoId, setActiveVideoId] = useState(null);
   const [error, setError] = useState(null);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
@@ -37,12 +40,6 @@ const Home = () => {
     setActiveVideoIndex(index);
     setActiveVideoId(videos[index]?.id);
   });
-
-  const marquee = keyframes`
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  `;
-
   const toggleMute = () => setIsMuted((m) => !m);
 
   const fetchVideos = useCallback(async () => {
@@ -99,10 +96,14 @@ const Home = () => {
             setError("Too many requests. Please wait a moment and try again.");
           } else if (err.response) {
             setError(
-              `API error: ${err.response.status} - ${err.response.data?.message || "Unknown error"}`
+              `API error: ${err.response.status} - ${
+                err.response.data?.message || "Unknown error"
+              }`
             );
           } else {
-            setError("Failed to connect to the server. Please check your network.");
+            setError(
+              "Failed to connect to the server. Please check your network."
+            );
           }
         }
         attempt += 1;
@@ -113,7 +114,9 @@ const Home = () => {
     setIsFetching(false);
   }, [isFetching, hasMore]);
 
-  const debouncedFetchVideos = useCallback(debounce(fetchVideos, 500), [fetchVideos]);
+  const debouncedFetchVideos = useCallback(debounce(fetchVideos, 500), [
+    fetchVideos,
+  ]);
 
   useEffect(() => {
     fetchVideos();
@@ -166,166 +169,167 @@ const Home = () => {
         </Box>
       )}
 
-      {videos.map((video, index) => (
-        <Box
-          ref={assignRef(index)}
-          key={video.id}
-          height="100vh"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          sx={{ scrollSnapAlign: "start", position: "relative" }}
-        >
-          <Box width={360} height="83%" position="relative">
-            {video.videoUrl ? (
-              <AutoPlayVideo
-                url={video.videoUrl}
-                muted={isMuted}
-                isActive={activeVideoId === video.id}
-                videoId={video.id}
-              />
-            ) : (
-              <Typography color="white">Video unavailable</Typography>
-            )}
-
-            <Box
-              position="absolute"
-              bottom={120}
-              left={16}
-              right={16}
-              zIndex={2}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-                maxWidth: "calc(100% - 32px)",
-                overflow: "hidden",
-              }}
-            >
-              <Typography noWrap fontWeight="bold" color="white">
-                {video.author.username}
-              </Typography>
-              <Typography color="white" fontSize={12} whiteSpace="pre-line">
-                {video.description}
-              </Typography>
-              <Typography color="#f1f1f1" fontSize={12}>
-                {video.hashtags.map((h) => `#${h.hashtag.name}`).join(" ")}
-              </Typography>
-            </Box>
-
-            <Box
-              position="absolute"
-              top={10}
-              left={10}
-              sx={{
-                bgcolor: "rgba(0,0,0,0.5)",
-                borderRadius: "50%",
-                width: 35,
-                height: 35,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
-              onClick={toggleMute}
-            >
-              {isMuted ? (
-                <VolumeOff sx={{ color: "white" }} />
+      {videos.map((video, index) => {
+        const isActive = activeVideoId === video.id;
+        return (
+          <Box
+            ref={assignRef(index)}
+            key={video.id}
+            height="100vh"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{ scrollSnapAlign: "start", position: "relative" }}
+          >
+            <Box width={360} height="83%" position="relative">
+              {video.videoUrl ? (
+                <AutoPlayVideo
+                  url={video.videoUrl}
+                  muted={isMuted}
+                  isActive={activeVideoId === video.id}
+                  videoId={video.id}
+                />
               ) : (
-                <VolumeUp sx={{ color: "white" }} />
+                <Typography color="white">Video unavailable</Typography>
               )}
-            </Box>
 
-            {video.music?.title && (
               <Box
                 position="absolute"
-                bottom={10}
-                sx={{ width: 350, overflow: "hidden", whiteSpace: "nowrap" }}
+                bottom={120}
+                left={16}
+                right={16}
+                zIndex={2}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  maxWidth: "calc(100% - 32px)",
+                  overflow: "hidden",
+                }}
               >
-                <Typography
-                  sx={{
-                    animation: `${marquee} 10s linear infinite`,
-                    color: "white",
-                    fontSize: 14,
-                  }}
-                >
-                  🎵 {video.music.title}
+                <Typography noWrap fontWeight="bold" color="white">
+                  {video.author.username}
+                </Typography>
+                <Typography color="white" fontSize={12} whiteSpace="pre-line">
+                  {video.description}
+                </Typography>
+                <Typography color="#f1f1f1" fontSize={12}>
+                  {video.hashtags.map((h) => `#${h.hashtag.name}`).join(" ")}
                 </Typography>
               </Box>
-            )}
-          </Box>
 
-          <Stack spacing={2} alignItems="center" ml={2} mt={25}>
-            <Box position="relative">
-              <Avatar src={video.thumbnailUrl} sx={{ width: 50, height: 50 }} />
               <Box
                 position="absolute"
-                left={4}
-                bottom={-9}
-                bgcolor="red"
-                borderRadius="50%"
-                width={25}
-                height={25}
+                top={10}
+                left={10}
+                sx={{
+                  bgcolor: "rgba(0,0,0,0.5)",
+                  borderRadius: "50%",
+                  width: 35,
+                  height: 35,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={toggleMute}
+              >
+                {isMuted ? (
+                  <VolumeOff sx={{ color: "white" }} />
+                ) : (
+                  <VolumeUp sx={{ color: "white" }} />
+                )}
+              </Box>
+            </Box>
+
+            <Stack spacing={2} alignItems="center" ml={2} mt={20}>
+              <Box
+                position="relative"
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
               >
-                <Typography color="white" fontWeight="bold">
-                  +
-                </Typography>
-              </Box>
-            </Box>
-            {[Favorite, ChatBubble, Bookmark, Share].map((Icon, i) => (
-              <Box
-                key={i}
-                textAlign="center"
-                display="flex"
-                flexDirection="column"
-              >
+                <Link to={`/profile/${video.authorId}`}>
+                  <Avatar
+                    src={video.author.profilePic?.find(Boolean) || ""}
+                    sx={{ width: 50, height: 50 }}
+                  />
+                </Link>
                 <Box
-                  sx={{
-                    borderRadius: "50%",
-                    border: "1px solid rgba(255,255,255,0.5)",
-                    bgcolor: "rgba(22,24,35,0.06)",
-                    p: 1,
-                    width: 36,
-                    height: 36,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+                  position="absolute"
+                  bottom={-9}
+                  bgcolor="red"
+                  borderRadius="50%"
+                  width={25}
+                  height={25}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
                 >
-                  <Icon />
+                  <Typography color="white" fontWeight="bold">
+                    +
+                  </Typography>
                 </Box>
-                <Typography variant="caption">
-                  {i === 0
-                    ? video.likeCount
-                    : i === 1
-                    ? video.commentCount
-                    : i === 2
-                    ? 0
-                    : video.shareCount}
-                </Typography>
               </Box>
-            ))}
-            <Box>
-              <Avatar
-                src={video.music.thumbnail}
-                sx={{
-                  width: 50,
-                  height: 50,
-                  animation: "spin 4s linear infinite",
-                  "@keyframes spin": {
-                    from: { transform: "rotate(0deg)" },
-                    to: { transform: "rotate(360deg)" },
-                  },
-                }}
-              />
-            </Box>
-          </Stack>
-        </Box>
-      ))}
+              {[Favorite, ChatBubble, Bookmark, Share].map((Icon, i) => (
+                <Box
+                  key={i}
+                  textAlign="center"
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Box
+                    sx={{
+                      borderRadius: "50%",
+                      border: "1px solid rgba(255,255,255,0.5)",
+                      bgcolor: "rgba(22,24,35,0.06)",
+                      p: 1,
+                      width: 36,
+                      height: 36,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: i === 1 ? "pointer" : "default",
+                    }}
+                    onClick={i === 1 ? () => setIsCommentOpen(true) : undefined}
+                  >
+                    <Icon />
+                  </Box>
+                  <Typography variant="caption" fontSize={17}>
+                    {i === 0
+                      ? video.likeCount
+                      : i === 1
+                      ? video.commentCount
+                      : i === 2
+                      ? 0
+                      : video.shareCount}
+                  </Typography>
+                </Box>
+              ))}
 
+              <Box>
+                <Avatar
+                  src={video.music.thumbnail}
+                  sx={{
+                    width: 50,
+                    height: 50,
+                    animation: "spin 4s linear infinite",
+                    "@keyframes spin": {
+                      from: { transform: "rotate(0deg)" },
+                      to: { transform: "rotate(360deg)" },
+                    },
+                  }}
+                />
+              </Box>
+            </Stack>
+            <AnimatePresence>
+              {isActive && isCommentOpen && (
+                <CommentBox onClose={() => setIsCommentOpen(false)} videoId={video.videoId} />
+              )}
+            </AnimatePresence>
+          </Box>
+        );
+      })}
       <Box
         position="fixed"
         right={10}
@@ -337,6 +341,7 @@ const Home = () => {
           onScroll={(dir) => {
             const newIndex = activeVideoIndex + dir;
             if (newIndex >= 0 && newIndex < videos.length) {
+              setIsCommentOpen(false);
               scrollToVideo(newIndex);
             }
           }}
