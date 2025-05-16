@@ -21,7 +21,7 @@ import RightBar from "../components/RightBar";
 import AutoPlayVideo from "../components/Video";
 import CommentBox from "../components/CommentBox";
 import { debounce } from "../utils/debounce";
-import { useVideoScroller } from "../hooks/useVideoScroller";
+import { useVideoScroller } from "../hooks/UseVideoScroller";
 import { Link } from "react-router-dom";
 
 const Home = () => {

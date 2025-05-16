@@ -1,16 +1,19 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect } from "react";
 
 export const useVideoScroller = (videos, onActiveChange) => {
   const videoRefs = useRef([]);
 
-  const assignRef = useCallback((index) => (el) => {
-    videoRefs.current[index] = el;
-  }, []);
+  const assignRef = useCallback(
+    (index) => (el) => {
+      videoRefs.current[index] = el;
+    },
+    []
+  );
 
   const scrollToVideo = useCallback((index) => {
     const el = videoRefs.current[index];
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, []);
 
@@ -19,8 +22,10 @@ export const useVideoScroller = (videos, onActiveChange) => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const index = videoRefs.current.findIndex((el) => el === entry.target);
-            if (index !== -1 && typeof onActiveChange === 'function') {
+            const index = videoRefs.current.findIndex(
+              (el) => el === entry.target
+            );
+            if (index !== -1 && typeof onActiveChange === "function") {
               onActiveChange(index);
             }
           }
