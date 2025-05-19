@@ -50,7 +50,7 @@ const CommentBox = ({ onClose, videoId }) => {
       transition={{ duration: 0.3 }}
       style={{
         position: "absolute",
-        right: 0,
+        right: "calc(50% - 220px)",
         bottom: 70,
         width: "350px",
         height: "calc(100vh - 170px)",

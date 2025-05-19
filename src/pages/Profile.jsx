@@ -12,6 +12,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import LazyVideo from "../components/LazyVideo";
 
 const Profile = () => {
   const { authorId } = useParams();
@@ -124,57 +125,13 @@ const Profile = () => {
 
       <Grid container spacing={2} mt={2}>
         {tab === 0 &&
-          author?.videos?.map((video) => (
-            <Grid item xs={6} sm={4} md={3} key={video.id} minHeight="40vh">
-              <Box
-                sx={{
-                  position: "relative",
-                  width: "100%",
-                  borderRadius: 2,
-                  cursor: "pointer",
-                  aspectRatio: "9/16",
-                  overflow: "hidden",
-                }}
-              >
-                <Box
-                  component="video"
-                  src={video.videoUrl}
-                  muted
-                  loop
-                  playsInline
-                  sx={{
-                    width: "180px",
-                    height: "100%",
-                    objectFit: "cover",
-                    transition: "all 0.3s ease",
-                  }}
-                  onMouseEnter={(e) => e.target.play()}
-                  onMouseLeave={(e) => {
-                    e.target.pause();
-                    e.target.currentTime = 0;
-                  }}
-                />
-
-                <Box
-                  position="absolute"
-                  bottom={8}
-                  left={8}
-                  display="flex"
-                  alignItems="center"
-                  px={1}
-                  py={0.5}
-                  borderRadius={1}
-                >
-                  <VisibilityIcon
-                    sx={{ fontSize: 16, color: "white", mr: 0.5 }}
-                  />
-                  <Typography fontSize={13} color="white" fontWeight={500} mt={0.5}>
-                    {video.viewCount}
-                  </Typography>
-                </Box>
-              </Box>
-            </Grid>
-          ))}
+          author?.videos?.map((video) => {
+            return (
+              <Grid item xs={6} sm={4} md={3} key={video.id} minHeight="40vh">
+                <LazyVideo video={video} />
+              </Grid>
+            );
+          })}
         {tab !== 0 && (
           <Grid item xs={12} minHeight="40vh">
             <Typography color="gray" mt={2}>
@@ -185,6 +142,6 @@ const Profile = () => {
       </Grid>
     </Box>
   );
-}
+};
 
 export default Profile;

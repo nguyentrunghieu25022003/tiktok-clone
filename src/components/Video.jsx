@@ -8,7 +8,6 @@ const AutoPlayVideo = ({ url, muted, isActive, videoId }) => {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isCommentOpen, setIsCommentOpen] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -131,7 +130,8 @@ const AutoPlayVideo = ({ url, muted, isActive, videoId }) => {
                   justifyContent="space-between"
                   color="#ffffff"
                   fontSize={12}
-                  mt={-1}
+                  mt={1/2}
+                  mb={1}
                 >
                   <Typography variant="caption">
                     {formatTime(currentTime)}

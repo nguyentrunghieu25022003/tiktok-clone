@@ -3,7 +3,7 @@ import {
   Typography,
   Button,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   InputBase,
@@ -97,10 +97,9 @@ const SideBar = () => {
           {menuItems.map((item, index) => {
             const isActive = location.pathname === item.path;
             return (
-              <ListItem
-                button
+              <ListItemButton
                 key={index}
-                component="Link"
+                component={Link}
                 to={item.path}
                 sx={{
                   px: 1,
@@ -117,7 +116,7 @@ const SideBar = () => {
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={<Typography>{item.label}</Typography>} />
-              </ListItem>
+              </ListItemButton>
             );
           })}
         </List>
@@ -143,7 +142,7 @@ const SideBar = () => {
             "More",
             "© 2025 TikTok",
           ].map((label, i) => (
-            <ListItem button key={i} sx={{ px: 2, py: 0.5, minHeight: 20 }}>
+            <ListItemButton key={i} sx={{ px: 2, py: 0.5, minHeight: 20 }}>
               <ListItemText
                 primary={
                   <Typography
@@ -158,7 +157,7 @@ const SideBar = () => {
                   </Typography>
                 }
               />
-            </ListItem>
+            </ListItemButton>
           ))}
         </List>
       </Box>

@@ -245,6 +245,7 @@ const Home = () => {
             <Stack spacing={2} alignItems="center" ml={2} mt={20}>
               <Box
                 position="relative"
+                bottom={10}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -252,7 +253,7 @@ const Home = () => {
                 <Link to={`/profile/${video.authorId}`}>
                   <Avatar
                     src={video.author.profilePic?.find(Boolean) || ""}
-                    sx={{ width: 50, height: 50 }}
+                    sx={{ width: 50, height: 50, boxShadow: "1px 2px 15px -4px #000000" }}
                   />
                 </Link>
                 <Box
