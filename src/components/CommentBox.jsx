@@ -51,7 +51,7 @@ const CommentBox = ({ onClose, videoId }) => {
       style={{
         position: "absolute",
         right: "calc(50% - 220px)",
-        bottom: 70,
+        bottom: 69,
         width: "350px",
         height: "calc(100vh - 170px)",
         backgroundColor: "#fff",

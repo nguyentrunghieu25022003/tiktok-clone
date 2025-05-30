@@ -22,6 +22,7 @@ import AutoPlayVideo from "../components/Video";
 import CommentBox from "../components/CommentBox";
 import { debounce } from "../utils/debounce";
 import { useVideoScroller } from "../hooks/UseVideoScroller";
+import { useSocket } from "../context/SocketContext";
 import { Link } from "react-router-dom";
 
 const Home = () => {
@@ -35,6 +36,7 @@ const Home = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const pageRef = useRef(1);
   const sentinelRef = useRef(null);
+  const socket = useSocket();
 
   const { assignRef, scrollToVideo } = useVideoScroller(videos, (index) => {
     setActiveVideoIndex(index);
@@ -253,7 +255,11 @@ const Home = () => {
                 <Link to={`/profile/${video.authorId}`}>
                   <Avatar
                     src={video.author.profilePic?.find(Boolean) || ""}
-                    sx={{ width: 50, height: 50, boxShadow: "1px 2px 15px -4px #000000" }}
+                    sx={{
+                      width: 50,
+                      height: 50,
+                      boxShadow: "1px 2px 15px -4px #000000",
+                    }}
                   />
                 </Link>
                 <Box
@@ -292,7 +298,13 @@ const Home = () => {
                       justifyContent: "center",
                       cursor: i === 1 ? "pointer" : "default",
                     }}
-                    onClick={i === 1 ? () => setIsCommentOpen(true) : undefined}
+                    onClick={() => {
+                      if (i === 0) {
+                        socket.emit("likeVideo", { userId: "vdvd", videoId: video.id });
+                      } else if (i === 1) {
+                        setIsCommentOpen(true);
+                      }
+                    }}
                   >
                     <Icon />
                   </Box>
@@ -325,7 +337,10 @@ const Home = () => {
             </Stack>
             <AnimatePresence>
               {isActive && isCommentOpen && (
-                <CommentBox onClose={() => setIsCommentOpen(false)} videoId={video.videoId} />
+                <CommentBox
+                  onClose={() => setIsCommentOpen(false)}
+                  videoId={video.videoId}
+                />
               )}
             </AnimatePresence>
           </Box>
